@@ -1,0 +1,156 @@
+﻿@{
+    ViewData["Title"] = "Manage Users";
+    var employees = ViewBag.Employees as IList<AlbaOnboarding.Models.ApplicationUser>;
+    var hrs = ViewBag.HRs as IList<AlbaOnboarding.Models.ApplicationUser>;
+}
+
+<h2>Manage Users</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<!-- HR Officers -->
+<div class="card mt-3">
+    <div class="card-header"><h5>HR Officers</h5></div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var hr in hrs)
+                {
+                    var isLocked = hr.LockoutEnd.HasValue &&
+                        hr.LockoutEnd > DateTimeOffset.Now;
+                    <tr>
+                        <td>@hr.FullName</td>
+                        <td>@hr.Email</td>
+                        <td>
+                            <span class="badge"
+                                  style="background:@(isLocked ? "#bd443c" : "#2e7d32")">
+                                @(isLocked ? "Inactive" : "Active")
+                            </span>
+                        </td>
+                        <td>
+                            @if (isLocked)
+                            {
+                                <form asp-action="ReactivateUser" method="post"
+                                      style="display:inline">
+                                    <input type="hidden" name="userId"
+                                           value="@hr.Id" />
+                                    <button type="submit"
+                                            class="btn btn-sm btn-success"
+                                            onclick="return confirm(
+                                        'Reactivate @hr.FullName?')">
+                                        Reactivate
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="DeactivateUser" method="post"
+                                      style="display:inline">
+                                    <input type="hidden" name="userId"
+                                           value="@hr.Id" />
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm(
+                                        'Are you sure you want to deactivate @hr.FullName? They will not be able to log in.')">
+                                        Deactivate
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Employees -->
+<div class="card mt-4">
+    <div class="card-header"><h5>Employees</h5></div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th>Onboarding</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var emp in employees)
+                {
+                    var isLocked = emp.LockoutEnd.HasValue &&
+                        emp.LockoutEnd > DateTimeOffset.Now;
+                    <tr>
+                        <td>@emp.FullName</td>
+                        <td>@emp.Email</td>
+                        <td>@emp.Department</td>
+                        <td>
+                            <span class="badge"
+                                  style="background:@(
+                                                                  emp.OnboardingStatus ==
+                                                                  AlbaOnboarding.Models.OnboardingStatus.Completed
+                                                                  ? "#2e7d32" :
+                                                                  emp.OnboardingStatus ==
+                                                                  AlbaOnboarding.Models.OnboardingStatus.InProgress
+                                                                  ? "#bd443c" : "#888888")">
+                                @emp.OnboardingStatus
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge"
+                                  style="background:@(isLocked
+                                                                                                        ? "#bd443c" : "#2e7d32")">
+                                @(isLocked ? "Inactive" : "Active")
+                            </span>
+                        </td>
+                        <td>
+                            @if (isLocked)
+                            {
+                                <form asp-action="ReactivateUser" method="post"
+                                      style="display:inline">
+                                    <input type="hidden" name="userId"
+                                           value="@emp.Id" />
+                                    <button type="submit"
+                                            class="btn btn-sm btn-success"
+                                            onclick="return confirm(
+                                        'Reactivate @emp.FullName?')">
+                                        Reactivate
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="DeactivateUser" method="post"
+                                      style="display:inline">
+                                    <input type="hidden" name="userId"
+                                           value="@emp.Id" />
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm(
+                                        'Are you sure you want to deactivate @emp.FullName? They will not be able to log in.')">
+                                        Deactivate
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

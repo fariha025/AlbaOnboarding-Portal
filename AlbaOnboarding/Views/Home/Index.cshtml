@@ -1,0 +1,208 @@
+﻿@{
+    ViewData["Title"] = "Welcome";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Hero section -->
+<div style="background:#101042;
+    color:white;padding:70px 20px 60px;
+    margin:-24px -12px 0;text-align:center">
+    <div style="max-width:680px;margin:0 auto">
+        <div style="font-size:3rem;margin-bottom:12px">🏭</div>
+        <h1 style="font-size:2.4rem;font-weight:600;
+            margin-bottom:12px;letter-spacing:0.5px">
+            ALBA Onboarding Portal
+        </h1>
+        <p style="font-size:1.05rem;opacity:0.9;
+            line-height:1.7;margin-bottom:8px">
+            Aluminium Bahrain B.S.C. (ALBA)
+        </p>
+        <p style="font-size:0.95rem;opacity:0.75;
+            max-width:500px;margin:0 auto 28px">
+            A unified digital platform replacing manual onboarding with
+            guided workflows, secure document handling, and real-time tracking.
+        </p>
+        <a asp-area="Identity" asp-page="/Account/Login"
+               style="background:white;color:#101042;
+            padding:13px 36px;border-radius:8px;
+            text-decoration:none;font-weight:600;
+            font-size:1rem;display:inline-block;
+            box-shadow:0 4px 12px rgba(0,0,0,0.2);
+            transition:all .2s">
+            Sign In to Portal →
+        </a>
+    </div>
+</div>
+
+<!-- Stats bar -->
+<div style="background:#101042;color:white;
+    padding:16px 20px;margin:0 -12px">
+    <div style="max-width:800px;margin:0 auto;
+        display:flex;justify-content:space-around;
+        flex-wrap:wrap;gap:12px;text-align:center">
+        <div>
+            <div style="font-size:1.6rem;font-weight:600">3</div>
+            <div style="font-size:0.8rem;opacity:0.8">User Roles</div>
+        </div>
+        <div>
+            <div style="font-size:1.6rem;font-weight:600">51</div>
+            <div style="font-size:0.8rem;opacity:0.8">Checklist Items</div>
+        </div>
+        <div>
+            <div style="font-size:1.6rem;font-weight:600">7</div>
+            <div style="font-size:0.8rem;opacity:0.8">Document Categories</div>
+        </div>
+        <div>
+            <div style="font-size:1.6rem;font-weight:600">100%</div>
+            <div style="font-size:0.8rem;opacity:0.8">Digital Process</div>
+        </div>
+    </div>
+</div>
+
+<!-- Features grid -->
+<div style="max-width:900px;margin:40px auto 0">
+    <h3 style="text-align:center;color:#101042;
+        margin-bottom:28px;font-weight:500">
+        Platform Features
+    </h3>
+    <div style="display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+        gap:20px">
+
+        <div style="background:white;border-radius:12px;
+            padding:24px;border-top:4px solid #101042;
+            box-shadow:0 2px 8px rgba(0,0,117,0.08)">
+            <div style="font-size:1.8rem;margin-bottom:10px">📋</div>
+            <h5 style="color:#101042;margin-bottom:8px;font-weight:600">
+                Digital Checklists
+            </h5>
+            <p style="color:#666;font-size:0.9rem;line-height:1.6;margin:0">
+                Replaces paper-based onboarding with guided digital workflows
+                organized by category — from Pre-Employment to IT Setup.
+            </p>
+        </div>
+
+        <div style="background:white;border-radius:12px;
+            padding:24px;border-top:4px solid #bd443c;
+            box-shadow:0 2px 8px rgba(0,0,117,0.08)">
+            <div style="font-size:1.8rem;margin-bottom:10px">📁</div>
+            <h5 style="color:#bd443c;margin-bottom:8px;font-weight:600">
+                Secure Document Upload
+            </h5>
+            <p style="color:#666;font-size:0.9rem;line-height:1.6;margin:0">
+                Employees upload required documents securely. HR verifies
+                and approves digitally with comments — no physical paperwork.
+            </p>
+        </div>
+
+        <div style="background:white;border-radius:12px;
+            padding:24px;border-top:4px solid #101042;
+            box-shadow:0 2px 8px rgba(0,0,117,0.08)">
+            <div style="font-size:1.8rem;margin-bottom:10px">📊</div>
+            <h5 style="color:#101042;margin-bottom:8px;font-weight:600">
+                Real-Time Tracking
+            </h5>
+            <p style="color:#666;font-size:0.9rem;line-height:1.6;margin:0">
+                HR and Admin monitor onboarding progress live with
+                dashboards, progress bars, and department-level analytics.
+            </p>
+        </div>
+
+        <div style="background:white;border-radius:12px;
+            padding:24px;border-top:4px solid #bd443c;
+            box-shadow:0 2px 8px rgba(0,0,117,0.08)">
+            <div style="font-size:1.8rem;margin-bottom:10px">👥</div>
+            <h5 style="color:#bd443c;margin-bottom:8px;font-weight:600">
+                Role-Based Access
+            </h5>
+            <p style="color:#666;font-size:0.9rem;line-height:1.6;margin:0">
+                Three distinct portals for Admin, HR Officers, and Employees.
+                Each role sees only what is relevant to their responsibilities.
+            </p>
+        </div>
+
+        <div style="background:white;border-radius:12px;
+            padding:24px;border-top:4px solid #101042;
+            box-shadow:0 2px 8px rgba(0,0,117,0.08)">
+            <div style="font-size:1.8rem;margin-bottom:10px">✉️</div>
+            <h5 style="color:#101042;margin-bottom:8px;font-weight:600">
+                Email Invitations
+            </h5>
+            <p style="color:#666;font-size:0.9rem;line-height:1.6;margin:0">
+                Admin invites new employees via a secure email link.
+                Role is assigned automatically upon registration —
+                no manual account creation needed.
+            </p>
+        </div>
+
+        <div style="background:white;border-radius:12px;
+            padding:24px;border-top:4px solid #bd443c;
+            box-shadow:0 2px 8px rgba(0,0,117,0.08)">
+            <div style="font-size:1.8rem;margin-bottom:10px">✅</div>
+            <h5 style="color:#bd443c;margin-bottom:8px;font-weight:600">
+                Compliance Ready
+            </h5>
+            <p style="color:#666;font-size:0.9rem;line-height:1.6;margin:0">
+                Ensures all mandatory ALBA documents are collected and
+                approved before employee integration. Full audit trail
+                maintained for compliance.
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<!-- How it works -->
+<div style="max-width:900px;margin:48px auto 0">
+    <h3 style="text-align:center;color:#101042;
+        margin-bottom:28px;font-weight:500">
+        How It Works
+    </h3>
+    <div style="display:flex;flex-wrap:wrap;
+        justify-content:center;gap:0">
+
+        @foreach (var step in new[] {
+            ("1", "#101042", "Admin Invites", "Admin sends a secure invitation email to the new employee with their assigned role."),
+            ("2", "#bd443c", "Employee Registers", "Employee clicks the link, creates their account and completes their profile."),
+            ("3", "#101042", "Documents Uploaded", "Employee uploads all required documents organized by checklist category."),
+            ("4", "#bd443c", "HR Reviews", "HR officer reviews each document and approves or rejects with feedback."),
+            ("5", "#101042", "Onboarding Complete", "Once all documents approved, onboarding is marked complete and admin is notified.")
+        })
+        {
+            <div style="text-align:center;padding:16px;
+                min-width:160px;flex:1">
+                <div style="width:48px;height:48px;border-radius:50%;
+                    background:@step.Item2;color:white;
+                    display:flex;align-items:center;
+                    justify-content:center;font-size:1.3rem;
+                    font-weight:600;margin:0 auto 10px">
+                    @step.Item1
+                </div>
+                <h6 style="color:@step.Item2;font-weight:600;
+                    margin-bottom:6px">
+                    @step.Item3
+                </h6>
+                <p style="color:#777;font-size:0.82rem;
+                    line-height:1.5;margin:0">
+                    @step.Item4
+                </p>
+            </div>
+        }
+
+    </div>
+</div>
+
+<!-- Footer info -->
+<div style="background:white;border-radius:12px;
+    padding:24px;text-align:center;
+    margin:40px 0;
+    border-left:4px solid #101042;
+    box-shadow:0 2px 8px rgba(0,0,117,0.08)">
+    <h6 style="color:#101042;margin-bottom:6px;font-weight:600">
+        For assistance contact HR & Training Department
+    </h6>
+    <p style="color:#888;font-size:0.88rem;margin:0">
+        Aluminium Bahrain B.S.C. (ALBA) — HR & Training Department
+        — Onboarding Portal
+    </p>
+</div>

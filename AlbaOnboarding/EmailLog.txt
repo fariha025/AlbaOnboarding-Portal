@@ -1,0 +1,21 @@
+
+=============================
+TO: west12@gmail.com
+SUBJECT: You're invited to join ALBA Onboarding
+LINK: https://localhost:7284/Account/Register?area=Identity&token=36701dc8-7c8c-4873-9950-b8cfca67338d&email=west12@gmail.com
+TIME: 5/3/2026 7:01:45 AM
+=============================
+
+=============================
+TO: newemployee@alba.com
+SUBJECT: You're invited to join ALBA Onboarding
+LINK: https://localhost:7284/Account/Register?area=Identity&token=2c7a3fea-d3c7-4d62-ac0d-3af9b7a7c175&email=newemployee@alba.com
+TIME: 5/3/2026 7:10:23 AM
+=============================
+
+=============================
+TO: test12@gmail.com
+SUBJECT: You're invited to join ALBA Onboarding
+LINK: https://localhost:7284/Account/Register?area=Identity&token=8a8144a7-8d3e-4501-8701-6c3b4260ec40&email=test12@gmail.com
+TIME: 5/3/2026 7:13:52 AM
+=============================

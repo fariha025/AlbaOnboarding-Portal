@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ALBA Onboarding</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+   <style>
+    :root {
+        --alba-navy: #10104a;
+        --alba-red: #731a15;
+    }
+   body { background-color: #abb2cc; }
+    .navbar { background-color: #10104a !important; }
+    .navbar-brand { font-weight: 600; color: white !important; }
+    .nav-link { color: rgba(255,255,255,0.85) !important; }
+    .nav-link:hover { color: white !important; }
+    .btn-dark {
+        background-color: #10104a !important;
+        border-color: #10104a !important;
+        color: white !important;
+    }
+    .btn-dark:hover {
+        background-color: #000060 !important;
+        border-color: #000060 !important;
+    }
+    .card { box-shadow: 0 1px 4px rgba(0,0,0,0.08); border: none; }
+    .progress { height: 20px; border-radius: 10px; }
+    .progress-bar { border-radius: 10px; font-size: 12px; }
+    .progress-bar.bg-info { background-color: #10104a !important; }
+    .progress-bar.bg-success { background-color: #275c2a !important; }
+    .table th { background-color: #10104a; color: white; }
+    .badge { font-size: 12px; padding: 5px 10px; }
+    .card-header { background-color: #10104a !important;
+                   color: white !important; border: none; }
+    .card-header h5 { color: white !important; margin: 0; }
+    .btn-success { background-color: #275c2a !important;
+                   border-color: #275c2a !important; }
+    .btn-danger { background-color: #731a15 !important;
+                  border-color: #731a15 !important; }
+    .text-primary { color: #10104a !important; }
+    .bg-primary { background-color: #10104a !important; }
+    .bg-danger { background-color: #731a15 !important; }
+    footer { background-color: #10104a !important; }
+    @@media (max-width: 768px) {
+        .card-body { padding: 0.75rem; }
+        .table { font-size: 13px; }
+        h2 { font-size: 1.4rem; }
+    }</style><link rel="manifest" href="/manifest.json" /><meta name="theme-color" content="#10104a" /></head><body>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                🏭 ALBA Onboarding
+            </a>
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Admin"
+                               asp-action="Index">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Admin"
+                               asp-action="ManageUsers">Manage Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Admin"
+                               asp-action="Reports">Reports</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Admin"
+                               asp-action="InviteUser">+ Invite</a>
+                        </li>
+                    }
+                    @if (User.IsInRole("HR"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="HR"
+                               asp-action="Dashboard">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="HR"
+                               asp-action="Checklists">Checklists</a>
+                        </li>
+                    }
+                    @if (User.IsInRole("Employee"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Employee"
+                               asp-action="Dashboard">My Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Employee"
+                               asp-action="Profile">My Profile</a>
+                        </li>
+                    }
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <span class="nav-link text-light opacity-75">
+                                @User.Identity.Name
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <form asp-area="Identity" asp-page="/Account/Logout"
+                                  method="post">
+                                <button type="submit"
+                                        class="btn btn-link nav-link text-light">
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-area="Identity"
+                               asp-page="/Account/Login">Login</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4 pb-5">
+        @RenderBody()
+    </div>
+
+    <footer class="bg-dark text-light text-center py-3 mt-5">
+        <small>ALBA Onboarding Portal &copy; @DateTime.Now.Year</small>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+    }</script></body></html>

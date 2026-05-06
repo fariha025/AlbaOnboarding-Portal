@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Checklists";
+}
+
+<h2>Onboarding Checklist Items</h2>
+<p class="text-muted">
+    These are the official ALBA onboarding checklist items
+    assigned to all employees.
+</p>
+
+@{
+    var db = ViewBag.ChecklistItems as List<AlbaOnboarding.Models.ChecklistItem>;
+}
+
+@if (db == null || !db.Any())
+{
+    <div class="alert alert-info">No checklist items found.</div>
+}
+else
+{
+    var groups = db.GroupBy(i => i.Description).ToList();
+    foreach (var group in groups)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>@group.Key</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="table mb-0">
+                    
+                    <tbody>
+                        @foreach (var item in group.OrderBy(i => i.DisplayOrder))
+                        {
+                            <tr>
+                                <td>@item.Title</td>
+                                <td>
+                                    @if (item.IsMandatory)
+                                    {
+                                        <span class="badge bg-danger">Required</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Optional</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+}

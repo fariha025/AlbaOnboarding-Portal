@@ -1,0 +1,91 @@
+﻿@page
+@model AlbaOnboarding.Areas.Identity.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-body p-4">
+                <h2 class="text-center mb-2">Create Account</h2>
+                <p class="text-center text-muted mb-4">
+                    You have been invited to join ALBA Onboarding
+                </p>
+
+                <form method="post"
+                      asp-route-token="@Model.InvitationToken"
+                      asp-route-role="@Model.InvitedRole">
+                    <div asp-validation-summary="ModelOnly"
+                         class="alert alert-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input asp-for="Input.FullName"
+                               class="form-control"
+                               placeholder="Your full name" />
+                        <span asp-validation-for="Input.FullName"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input asp-for="Input.Email"
+                               class="form-control"
+                               readonly
+                               style="background:#f8f9fa" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <input type="text" class="form-control"
+                               value="@Model.InvitedRole"
+                               readonly
+                               style="background:#f8f9fa" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <div class="input-group">
+                            <input asp-for="Input.Password"
+                                   class="form-control"
+                                   id="regPassword"
+                                   placeholder="Min. 6 characters" />
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    onclick="toggleReg()">
+                                Show
+                            </button>
+                        </div>
+                        <span asp-validation-for="Input.Password"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Confirm Password</label>
+                        <input asp-for="Input.ConfirmPassword"
+                               class="form-control"
+                               placeholder="Repeat password" />
+                        <span asp-validation-for="Input.ConfirmPassword"
+                              class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark w-100">
+                        Create Account
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleReg() {
+            var f = document.getElementById('regPassword');
+            f.type = f.type === 'password' ? 'text' : 'password';
+        }
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

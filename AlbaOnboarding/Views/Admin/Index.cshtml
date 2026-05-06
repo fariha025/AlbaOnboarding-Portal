@@ -1,0 +1,153 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h2>Admin Dashboard</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<!-- Summary cards -->
+<div class="row mt-3">
+    <div class="col-md-2">
+        <div class="card text-white bg-dark">
+            <div class="card-body text-center">
+                <h3>@ViewBag.TotalEmployees</h3>
+                <p>Employees</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-white bg-primary">
+            <div class="card-body text-center">
+                <h3>@ViewBag.TotalHR</h3>
+                <p>HR Officers</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-white bg-success">
+            <div class="card-body text-center">
+                <h3>@ViewBag.Completed</h3>
+                <p>Completed</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-white bg-warning">
+            <div class="card-body text-center">
+                <h3>@ViewBag.InProgress</h3>
+                <p>In Progress</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-white bg-secondary">
+            <div class="card-body text-center">
+                <h3>@ViewBag.NotStarted</h3>
+                <p>Not Started</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 d-flex align-items-center">
+        <a asp-action="InviteUser" class="btn btn-dark w-100">+ Invite User</a>
+    </div>
+</div>
+<div class="mb-3">
+    <input type="text" id="searchBox" class="form-control"
+           placeholder="Search by name, email or department..."
+           style="max-width:400px" />
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('searchBox').addEventListener('keyup', function() {
+            var val = this.value.toLowerCase();
+            document.querySelectorAll('tbody tr').forEach(function(row) {
+                row.style.display =
+                    row.textContent.toLowerCase().includes(val) ? '' : 'none';
+            });
+        });
+    </script>
+}
+<!-- All employees table -->
+<div class="card mt-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">All Employees</h5>
+        <a asp-action="ExportCsv" class="btn btn-sm btn-outline-dark">Export CSV</a>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                    <th>Progress</th>
+                    <th>Assigned HR</th>
+                    <th>Reassign HR</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var data in ViewBag.EmployeeData)
+                {
+                    var pct = (int)data.Percentage;
+                    var barColor = pct < 30 ? "danger" : pct < 70 ? "warning" : "success";
+                    <tr>
+                        <td>
+                            @data.Employee.FullName
+                            <br /><small class="text-muted">@data.Employee.Email</small>
+                        </td>
+                        <td>@data.Employee.Department</td>
+                        <td>
+                            <span class="badge bg-@(
+                                data.Employee.OnboardingStatus ==
+                                AlbaOnboarding.Models.OnboardingStatus.Completed ? "success" :
+                                data.Employee.OnboardingStatus ==
+                                AlbaOnboarding.Models.OnboardingStatus.InProgress ? "warning" :
+                                "secondary")">
+                                @data.Employee.OnboardingStatus
+                            </span>
+                        </td>
+                        <td style="width:150px">
+                            <div class="progress">
+                                <div class="progress-bar bg-@barColor"
+                                     style="width:@pct%">@pct%</div>
+                            </div>
+                        </td>
+                        <td>
+                            @if (data.AssignedHRName == "Not Assigned")
+                            {
+                                <span class="badge" style="background:#888">Not Assigned</span>
+                            }
+                            else
+                            {
+                                <span class="badge" style="background:#2e7d32">
+                                    ✓ @data.AssignedHRName
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            <form asp-action="AssignHR" method="post"
+                                  style="display:flex;gap:4px">
+                                <input type="hidden" name="employeeId"
+                                       value="@data.Employee.Id" />
+                                <select name="hrId" class="form-select form-select-sm">
+                                    <option value="">-- Select HR --</option>
+                                    @foreach (var hr in ViewBag.HRList)
+                                    {
+                                        <option value="@hr.Id">@hr.FullName</option>
+                                    }
+                                </select>
+                                <button type="submit"
+                                        class="btn btn-sm btn-dark">Assign</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

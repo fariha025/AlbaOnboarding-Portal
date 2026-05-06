@@ -1,0 +1,118 @@
+﻿@{
+    ViewData["Title"] = "Review Employee";
+    var employee = ViewBag.Employee as AlbaOnboarding.Models.ApplicationUser;
+    var items = ViewBag.Items as List<AlbaOnboarding.Models.ChecklistItem>;
+    var submissions = ViewBag.Submissions as List<AlbaOnboarding.Models.ChecklistSubmission>;
+}
+
+<a asp-action="Dashboard" class="btn btn-outline-secondary mb-3">← Back to Dashboard</a>
+<h2>Reviewing: @employee.FullName</h2>
+@{
+    var uploadedCount = submissions?.Count(s =>
+        s.Status == AlbaOnboarding.Models.SubmissionStatus.Uploaded) ?? 0;
+    var approvedCount = submissions?.Count(s =>
+        s.Status == AlbaOnboarding.Models.SubmissionStatus.Approved) ?? 0;
+    var rejectedCount = submissions?.Count(s =>
+        s.Status == AlbaOnboarding.Models.SubmissionStatus.Rejected) ?? 0;
+}
+<div class="d-flex gap-3 mb-3">
+    <span class="badge bg-primary fs-6">@uploadedCount Awaiting Review</span>
+    <span class="badge bg-success fs-6">@approvedCount Approved</span>
+    <span class="badge bg-danger fs-6">@rejectedCount Rejected</span>
+</div>
+<p class="text-muted">@employee.Email — @employee.Department</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="card mt-3">
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Document</th>
+                    <th>Status</th>
+                    <th>Uploaded File</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in items)
+                {
+                    var sub = submissions?.FirstOrDefault(s => s.ChecklistItemId == item.Id);
+                    var status = sub?.Status.ToString() ?? "Pending";
+                    var badgeColor = status switch
+                    {
+                        "Approved" => "success",
+                        "Uploaded" => "primary",
+                        "Rejected" => "danger",
+                        _ => "secondary"
+                    };
+                    <tr>
+                        <td>
+                            <strong>@item.Title</strong>
+                            @if (item.IsMandatory)
+                            {
+                                <span class="badge bg-danger ms-1">Required</span>
+                            }
+                        </td>
+                        <td><span class="badge bg-@badgeColor">@status</span></td>
+                        <td>
+                            @if (sub != null && !string.IsNullOrEmpty(sub.FilePath))
+                            {
+                                <!-- Changed: now routes through secure controller action -->
+                                <a asp-action="ViewDocument"
+                                   asp-route-submissionId="@sub.Id"
+                                   target="_blank"
+                                   class="btn btn-sm btn-outline-dark">View File</a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not uploaded</span>
+                            }
+                        </td>
+                        <td>
+                            @if (sub != null && sub.Status == AlbaOnboarding.Models.SubmissionStatus.Uploaded)
+                            {
+                                <form asp-action="ApproveDocument" method="post"
+                                      style="display:inline">
+                                    <input type="hidden" name="submissionId" value="@sub.Id" />
+                                    <input type="text" name="comment"
+                                           class="form-control form-control-sm mb-1"
+                                           placeholder="Comment (optional)"
+                                           style="width:180px;display:inline" />
+                                    <button type="submit"
+                                            class="btn btn-sm btn-success">
+                                        Approve
+                                    </button>
+                                </form>
+                                <form asp-action="RejectDocument" method="post"
+                                      style="display:inline;margin-left:4px">
+                                    <input type="hidden" name="submissionId" value="@sub.Id" />
+                                    <input type="text" name="comment"
+                                           class="form-control form-control-sm mb-1"
+                                           placeholder="Reason for rejection"
+                                           style="width:180px;display:inline" />
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger">
+                                        Reject
+                                    </button>
+                                </form>
+                            }
+                            else if (sub?.Status == AlbaOnboarding.Models.SubmissionStatus.Approved)
+                            {
+                                <span class="text-success">✓ Approved by @sub.ReviewedBy</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

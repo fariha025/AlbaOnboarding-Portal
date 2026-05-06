@@ -1,0 +1,319 @@
+﻿@{
+    ViewData["Title"] = "My Dashboard";
+    var user = ViewBag.User as AlbaOnboarding.Models.ApplicationUser;
+    var items = ViewBag.ChecklistItems as List<AlbaOnboarding.Models.ChecklistItem>;
+    var submissions = ViewBag.Submissions as List<AlbaOnboarding.Models.ChecklistSubmission>;
+    var grouped = items.GroupBy(i => i.Description).ToList();
+    int pct = items.Count > 0
+        ? (ViewBag.ApprovedCount * 100) / items.Count : 0;
+}
+
+<h2>Welcome, @user.FullName!</h2>
+<p class="text-muted">
+    Your HR Officer:
+    <strong style="color:#101042">@ViewBag.AssignedHR</strong>
+</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<!-- Progress card — full width, nothing cut off -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4 mb-3 mb-md-0">
+                <p class="mb-1"><strong>Profile Completion</strong></p>
+                <div class="progress" style="height:22px;border-radius:10px">
+                    <div class="progress-bar"
+                         style="width:@user.ProfileCompletionPercent%;
+                        background-color:#101042;
+                        border-radius:10px;
+                        font-size:12px;
+                        line-height:22px">
+                        @user.ProfileCompletionPercent%
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3 mb-md-0">
+                <p class="mb-1"><strong>Checklist Progress</strong></p>
+                <div class="progress" style="height:22px;border-radius:10px">
+                    <div class="progress-bar"
+                         style="width:@pct%;
+                        background-color:#2e7d32;
+                        border-radius:10px;
+                        font-size:12px;
+                        line-height:22px">
+                        @ViewBag.ApprovedCount / @ViewBag.TotalItems
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex align-items-center justify-content-center">
+                <div class="text-center">
+                    <p class="mb-1"><strong>Onboarding Status</strong></p>
+                    <span class="badge fs-6 px-3 py-2"
+                          style="background-color:@(
+                                                  user.OnboardingStatus ==
+                                                  AlbaOnboarding.Models.OnboardingStatus.Completed
+                                                  ? "#2e7d32" :
+                                                  user.OnboardingStatus ==
+                                                  AlbaOnboarding.Models.OnboardingStatus.InProgress
+                                                  ? "#bd443c" : "#888888")">
+                        @user.OnboardingStatus
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Checklist card -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">My Onboarding Checklist</h5>
+        <span class="badge"
+              style="background:#bd443c;font-size:13px">
+            @ViewBag.ApprovedCount / @ViewBag.TotalItems Approved
+        </span>
+    </div>
+    <div class="card-body">
+
+        <!-- Category tab buttons -->
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px">
+            @for (int i = 0; i < grouped.Count; i++)
+            {
+                var approvedInGroup = grouped[i].Count(gi =>
+                    submissions?.Any(s =>
+                        s.ChecklistItemId == gi.Id &&
+                        s.Status == AlbaOnboarding.Models.SubmissionStatus.Approved)
+                    == true);
+                var totalInGroup = grouped[i].Count();
+                <button onclick="showPage(@i)" id="tab-@i"
+                        class="btn btn-sm"
+                        style="border:1px solid #101042;
+                    background:@(i == 0 ? "#101042" : "white");
+                    color:@(i == 0 ? "white" : "#101042");
+                    position:relative">
+                    @(i + 1). @grouped[i].Key
+                    @if (approvedInGroup == totalInGroup)
+                    {
+                        <span style="color:#2e7d32;margin-left:4px">✓</span>
+                    }
+                </button>
+            }
+        </div>
+
+        <!-- Pages -->
+        @for (int p = 0; p < grouped.Count; p++)
+        {
+            var groupItems = grouped[p].ToList();
+            var approvedInPage = groupItems.Count(gi =>
+                submissions?.Any(s =>
+                    s.ChecklistItemId == gi.Id &&
+                    s.Status == AlbaOnboarding.Models.SubmissionStatus.Approved)
+                == true);
+            var pageProgress = groupItems.Count > 0
+                ? (approvedInPage * 100) / groupItems.Count : 0;
+
+            <div id="page-@p" style="display:@(p == 0 ? "block" : "none")">
+
+                <!-- Page header and progress -->
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <h6 style="color:#101042;margin:0">
+                        @grouped[p].Key
+                    </h6>
+                    <small class="text-muted">
+                        @approvedInPage / @groupItems.Count approved
+                    </small>
+                </div>
+                <div class="progress mb-3" style="height:8px;border-radius:6px">
+                    <div class="progress-bar"
+                         style="width:@pageProgress%;
+                        background-color:#101042;
+                        border-radius:6px">
+                    </div>
+                </div>
+
+                <!-- Items table -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Document</th>
+                            <th>Required</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in groupItems)
+                        {
+                            var sub = submissions?.FirstOrDefault(
+                                s => s.ChecklistItemId == item.Id);
+                            var status = sub?.Status.ToString() ?? "Pending";
+                            var badgeColor = status switch
+                            {
+                                "Approved" => "success",
+                                "Uploaded" => "primary",
+                                "Rejected" => "danger",
+                                _ => "secondary"
+                            };
+                            <tr>
+                                <td><strong>@item.Title</strong></td>
+                                <td>
+                                    @if (item.IsMandatory)
+                                    {
+                                        <span class="badge bg-danger">Required</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Optional</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge bg-@badgeColor">@status</span>
+                                    @if (sub?.ReviewComment != null)
+                                    {
+                                        <br />
+                                        <small class="text-muted">
+                                            @sub.ReviewComment
+                                        </small>
+                                    }
+                                </td>
+                                <td>
+                                    @if (status != "Approved")
+                                    {
+                                        <form asp-action="UploadDocument"
+                                              method="post"
+                                              enctype="multipart/form-data">
+                                            <input type="hidden"
+                                                   name="checklistItemId"
+                                                   value="@item.Id" />
+                                            <input type="file" name="file"
+                                                   class="form-control form-control-sm mb-1"
+                                                   accept=".pdf,.jpg,.jpeg,.png"
+                                                   required />
+                                            <button type="submit"
+                                                    class="btn btn-sm"
+                                                    style="background:#101042;color:white">
+                                                @(status == "Rejected"
+                                                    ? "Re-upload" : "Upload")
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span style="color:#2e7d32">✓ Done</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <!-- Prev / Next / Back to start buttons -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div>
+                        @if (p > 0)
+                        {
+                            <button onclick="showPage(@(p - 1))"
+                                    class="btn btn-sm me-2"
+                                    style="border:1px solid #101042;
+                                color:#101042">
+                                ← Previous
+                            </button>
+                        }
+                        @if (p > 0)
+                        {
+                            <button onclick="showPage(0)"
+                                    class="btn btn-sm"
+                                    style="border:1px solid #888;color:#888">
+                                ↩ Back to Start
+                            </button>
+                        }
+                    </div>
+
+                    @if (p < grouped.Count - 1)
+                    {
+                        <button onclick="showPage(@(p + 1))"
+                                class="btn btn-sm"
+                                style="background:#101042;color:white">
+                            Next →
+                        </button>
+                    }
+                    else
+                    {
+                        <span style="color:#2e7d32;font-weight:500">
+                            ✓ End of checklist
+                        </span>
+                    }
+                </div>
+
+                <!-- Page number buttons at bottom -->
+                <div style="display:flex;flex-wrap:wrap;gap:4px;
+                    margin-top:16px;justify-content:center;
+                    border-top:1px solid #eee;padding-top:12px">
+                    <small class="text-muted me-2 align-self-center">
+                        Go to page:
+                    </small>
+                    @for (int n = 0; n < grouped.Count; n++)
+                    {
+                        <button onclick="showPage(@n)"
+                                id="pagenum-@p-@n"
+                                class="btn btn-sm"
+                                style="width:32px;height:32px;padding:0;
+                            border:1px solid #101042;
+                            background:@(n == p ? "#101042" : "white");
+                            color:@(n == p ? "white" : "#101042");
+                            font-size:12px">
+                            @(n + 1)
+                        </button>
+                    }
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function showPage(n) {
+            var total = @grouped.Count;
+
+            // Hide all pages
+            for (var i = 0; i < total; i++) {
+                var page = document.getElementById('page-' + i);
+                if (page) page.style.display = 'none';
+            }
+
+            // Reset all tabs
+            for (var i = 0; i < total; i++) {
+                var tab = document.getElementById('tab-' + i);
+                if (tab) {
+                    tab.style.background = 'white';
+                    tab.style.color = '#101042';
+                }
+            }
+
+            // Show selected page
+            var selected = document.getElementById('page-' + n);
+            if (selected) selected.style.display = 'block';
+
+            // Highlight selected tab
+            var selectedTab = document.getElementById('tab-' + n);
+            if (selectedTab) {
+                selectedTab.style.background = '#101042';
+                selectedTab.style.color = 'white';
+            }
+
+            // Scroll to top of checklist
+            document.querySelector('.card:last-child').scrollIntoView(
+                { behavior: 'smooth', block: 'start' });
+        }
+    </script>
+}

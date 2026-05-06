@@ -1,0 +1,124 @@
+﻿@{
+    ViewData["Title"] = "Reports";
+}
+
+<div class="d-flex justify-content-between align-items-center">
+    <h2>Onboarding Reports</h2>
+    <a asp-action="ExportCsv" class="btn btn-dark">Download CSV Report</a>
+</div>
+
+<!-- Overall stats -->
+<div class="row mt-3">
+    <div class="col-md-3">
+        <div class="card text-white bg-dark">
+            <div class="card-body text-center">
+                <h3>@ViewBag.TotalEmployees</h3>
+                <p>Total Employees</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body text-center">
+                <h3>@ViewBag.Completed</h3>
+                <p>Completed</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body text-center">
+                <h3>@ViewBag.InProgress</h3>
+                <p>In Progress</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-secondary">
+            <div class="card-body text-center">
+                <h3>@ViewBag.NotStarted</h3>
+                <p>Not Started</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Document stats -->
+<div class="row mt-3">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h4>@ViewBag.TotalDocs</h4>
+                <p class="text-muted">Total Documents Submitted</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h4 class="text-success">@ViewBag.ApprovedDocs</h4>
+                <p class="text-muted">Documents Approved</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h4 class="text-warning">@ViewBag.PendingDocs</h4>
+                <p class="text-muted">Awaiting Review</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Department breakdown -->
+<div class="card mt-4">
+    <div class="card-header"><h5>Breakdown by Department</h5></div>
+    <div class="card-body">
+        @if (ViewBag.DeptGroups == null ||
+                    !((IEnumerable<dynamic>)ViewBag.DeptGroups).Any())
+        {
+            <p class="text-muted">
+                No department data yet — employees need to
+                fill in their department in their profile.
+            </p>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Total</th>
+                        <th>Completed</th>
+                        <th>In Progress</th>
+                        <th>Not Started</th>
+                        <th>Completion Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var dept in ViewBag.DeptGroups)
+                    {
+                        var rate = dept.Total > 0
+                            ? (dept.Completed * 100) / dept.Total : 0;
+                        <tr>
+                            <td><strong>@dept.Department</strong></td>
+                            <td>@dept.Total</td>
+                            <td><span class="badge bg-success">@dept.Completed</span></td>
+                            <td><span class="badge bg-warning">@dept.InProgress</span></td>
+                            <td><span class="badge bg-secondary">@dept.NotStarted</span></td>
+                            <td>
+                                <div class="progress" style="width:120px">
+                                    <div class="progress-bar bg-success"
+                                         style="width:@rate%">
+                                        @rate%
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
