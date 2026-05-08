@@ -502,7 +502,7 @@ h5 {
 /* ─── Focus accessibility ────────────────────────────── */
 .btn:focus, .form-control:focus, .form-check-input:focus {
     box-shadow: 0 0 0 3px rgba(80,86,216,0.2) !important; 
-}
+} 
 /* ─── Stat card text fix ─────────────────────────────── */
 .card.text-white h3,
 .card.text-white h4,
