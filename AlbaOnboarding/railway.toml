@@ -1,0 +1,6 @@
+﻿[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "dotnet AlbaOnboarding.dll"
+restartPolicyType = "on_failure"
