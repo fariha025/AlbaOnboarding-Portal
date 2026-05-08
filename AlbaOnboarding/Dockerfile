@@ -16,4 +16,4 @@ WORKDIR /app
 COPY --from=build /app/out .
 
 # Start the application
-ENTRYPOINT ["dotnet", "AlbaOnboarding.dll"]  
+ENTRYPOINT ["dotnet", "AlbaOnboarding.dll"]   
