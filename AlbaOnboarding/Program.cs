@@ -10,13 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+// RIGHT: This tells the app to use MySQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    if (builder.Environment.IsProduction())
-        options.UseMySql(connectionString,
-            ServerVersion.AutoDetect(connectionString));
-    else
-        options.UseSqlServer(connectionString);
+    // Make sure you use UseMySql here!
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
