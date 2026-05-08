@@ -1,4 +1,4 @@
- HEAD
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -138,5 +138,6 @@
                 navigator.serviceWorker.register('/sw.js');
             }
     </script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
-
+</html>
