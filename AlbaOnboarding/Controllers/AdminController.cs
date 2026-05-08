@@ -235,7 +235,9 @@ namespace AlbaOnboarding.Controllers
                 $"<p>This link expires in 7 days.</p>");
 
             TempData["Success"] = $"Invitation sent to {email}";
-            return RedirectToAction("Index");
+            TempData["InviteLink"] = link;
+            return RedirectToAction("InviteUser");
+            
         }
     }
 }

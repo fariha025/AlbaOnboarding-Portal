@@ -8,6 +8,28 @@
 {
     <div class="alert alert-success">@TempData["Success"]</div>
 }
+@if (TempData["InviteLink"] != null)
+{
+    <div class="card mt-3" style="border-left:4px solid #5056d8">
+        <div class="card-body">
+            <p style="font-size:13px;font-weight:500;color:#16246d;margin-bottom:6px">
+                Registration link (share manually if email fails):
+            </p>
+            <div style="display:flex;gap:8px;align-items:center">
+                <input type="text" id="inviteLink"
+                       class="form-control form-control-sm"
+                       value="@TempData["InviteLink"]"
+                       readonly />
+                <button type="button" class="btn btn-sm btn-dark"
+                        onclick="navigator.clipboard.writeText(
+                    document.getElementById('inviteLink').value);
+                    this.textContent='Copied!'">
+                    Copy
+                </button>
+            </div>
+        </div>
+    </div>
+}
 @if (TempData["Error"] != null)
 {
     <div class="alert alert-danger">@TempData["Error"]</div>

@@ -95,16 +95,19 @@
                 var totalInGroup = grouped[i].Count();
                 <button onclick="showPage(@i)" id="tab-@i"
                         class="btn btn-sm"
-                        style="border:1px solid #101042;
-                    background:@(i == 0 ? "#101042" : "white");
-                    color:@(i == 0 ? "white" : "#101042");
+                        style="border:1px solid #16246d;
+                    background:@(i == 0 ? "#16246d" : "white");
+                    color:@(i == 0 ? "white" : "#16246d");
                     position:relative">
                     @(i + 1). @grouped[i].Key
-                    @if (approvedInGroup == totalInGroup)
-                    {
-                        <span style="color:#2e7d32;margin-left:4px">✓</span>
-                    }
-                </button>
+                    <span style="background:@(approvedInGroup == totalInGroup ?
+                                                      "#1a6b2f" : "rgba(255,255,255,0.3)");
+            color:white;font-size:10px;
+            padding:1px 6px;border-radius:10px;
+            margin-left:4px">
+            @approvedInGroup/@totalInGroup
+        </span>
+    </button>
             }
         </div>
 

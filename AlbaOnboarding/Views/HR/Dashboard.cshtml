@@ -77,6 +77,12 @@
                             <td>
                                 @data.Employee.FullName<br />
                                 <small class="text-muted">@data.Employee.Email</small>
+                                <br />
+                                <span style="font-size:11px;font-weight:600;
+                                    color:@(data.Percentage >= 70 ? "#1a6b2f" :
+                                                                       data.Percentage >= 30 ? "#b45309" : "#8b1a14")">
+                                    @data.Percentage% complete
+                                </span>
                             </td>
                             <td>@data.Employee.Department</td>
                             <td>
