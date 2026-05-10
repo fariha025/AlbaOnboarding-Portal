@@ -4,7 +4,10 @@
 }
 
 <h2>My Profile</h2>
-<p class="text-muted">Complete all fields to reach 100% profile completion.</p>
+<p class="text-muted">
+    Complete your personal information below.
+    Employment details are assigned by HR and Admin.
+</p>
 
 @if (TempData["Success"] != null)
 {
@@ -12,30 +15,31 @@
 }
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-danger">@TempData["Error"]</div>
+    <div class="alert alert-danger">
+        @foreach (var err in TempData["Error"].ToString().Split('|'))
+        {
+            <div>⚠ @err.Trim()</div>
+        }
+    </div>
 }
 
 <!-- Profile completion bar -->
-<div class="row">
-    <div class="col-12 mb-3">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between mb-1">
-                    <span>Profile Completion</span>
-                    <strong>@Model.ProfileCompletionPercent%</strong>
-                </div>
-                <div class="progress">
-                    <div class="progress-bar"
-                         style="width:@Model.ProfileCompletionPercent%;
-                        background-color:#101042">
-                    </div>
-                </div>
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between mb-1">
+            <span>Profile Completion</span>
+            <strong>@Model.ProfileCompletionPercent%</strong>
+        </div>
+        <div class="progress">
+            <div class="progress-bar"
+                 style="width:@Model.ProfileCompletionPercent%;
+                background:linear-gradient(90deg,#16246d,#5056d8)">
             </div>
         </div>
     </div>
 </div>
 
-<!-- Photo upload — SEPARATE form, completely outside the profile form -->
+<!-- Photo upload — separate form -->
 <div class="card mb-4">
     <div class="card-header"><h5>Profile Photo</h5></div>
     <div class="card-body text-center">
@@ -43,14 +47,14 @@
         {
             <img src="@Model.PhotoPath"
                  style="width:100px;height:100px;border-radius:50%;
-            object-fit:cover;border:3px solid #101042;
+            object-fit:cover;border:3px solid #16246d;
             margin-bottom:12px" />
             <br />
             <form asp-action="DeletePhoto" method="post"
                   style="display:inline">
                 <button type="submit" class="btn btn-sm btn-danger mt-2"
                         onclick="return confirm(
-                    'Are you sure you want to remove your profile photo?')">
+                    'Remove your profile photo?')">
                     Remove Photo
                 </button>
             </form>
@@ -61,19 +65,17 @@
                 background:#e9ecef;margin:0 auto 12px;
                 display:flex;align-items:center;
                 justify-content:center;font-size:2rem;
-                color:#101042">
+                color:#16246d">
                 📷
             </div>
         }
         <form asp-action="UploadPhoto" method="post"
-              enctype="multipart/form-data"
-              style="margin-top:12px">
+              enctype="multipart/form-data" style="margin-top:12px">
             <input type="file" name="photo" accept=".jpg,.jpeg,.png"
                    class="form-control form-control-sm mb-2"
                    style="max-width:260px;margin:0 auto" />
             <br />
-            <button type="submit" class="btn btn-sm"
-                    style="background:#101042;color:white">
+            <button type="submit" class="btn btn-sm btn-dark">
                 @(string.IsNullOrEmpty(Model.PhotoPath)
                     ? "Upload Photo" : "Replace Photo")
             </button>
@@ -82,138 +84,173 @@
     </div>
 </div>
 
-<!-- Profile form — completely separate, no nested forms -->
-<form asp-action="Profile" method="post">
-    <div class="row">
+<div class="row">
+    <div class="col-md-6">
 
-        <!-- Left column -->
-        <div class="col-md-6">
-
-            <div class="card mb-3">
-                <div class="card-header"><h5>Personal Information</h5></div>
-                <div class="card-body">
+        <!-- EMPLOYEE EDITABLE — Personal Information -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>
+                    Personal Information
+                    <span style="font-size:11px;font-weight:400;
+                    opacity:0.8">(You can edit these)</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Profile" method="post" id="profileForm">
                     <div class="mb-3">
                         <label class="form-label">
-                            Employee Name <span class="text-danger">*</span>
+                            Full Name <span class="text-danger">*</span>
                         </label>
                         <input type="text" name="fullName" class="form-control"
-                               value="@Model.FullName" required />
+                               value="@Model.FullName" required
+                               placeholder="Enter your full name" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">
-                            CPR / Passport No.
-                        </label>
+                        <label class="form-label">CPR / Passport No.</label>
                         <input type="text" name="cprNumber" class="form-control"
-                               value="@Model.CprNumber" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Badge Number</label>
-                        <input type="text" name="badgeNumber" class="form-control"
-                               value="@Model.BadgeNumber" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">PRF Number</label>
-                        <input type="text" name="prfNumber" class="form-control"
-                               value="@Model.PrfNumber" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Joining Date</label>
-                        <input type="date" name="startDate" class="form-control"
-                               value="@Model.StartDate.ToString("yyyy-MM-dd")" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mb-3">
-                <div class="card-header"><h5>Contact Information</h5></div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="text" class="form-control"
-                               value="@Model.Email" disabled />
-                        <small class="text-muted">Cannot be changed</small>
+                               value="@Model.CprNumber" maxlength="9"
+                               placeholder="9-digit Bahrain CPR" />
+                        <small class="text-muted">Bahrain CPR: 9 digits</small>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Phone Number</label>
                         <input type="text" name="phoneNumber" class="form-control"
-                               value="@Model.PhoneNumber" />
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Right column -->
-        <div class="col-md-6">
-
-            <div class="card mb-3">
-                <div class="card-header"><h5>Employment Details</h5></div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Department <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" name="department" class="form-control"
-                               value="@Model.Department" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Position Title <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" name="jobTitle" class="form-control"
-                               value="@Model.JobTitle" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Grade</label>
-                        <input type="text" name="grade" class="form-control"
-                               value="@Model.Grade" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Reference No.</label>
-                        <input type="text" name="referenceNumber" class="form-control"
-                               value="@Model.ReferenceNumber" />
+                               value="@Model.PhoneNumber"
+                               placeholder="e.g. 36000000" />
+                        <small class="text-muted">
+                            Bahrain number starting with 3 or 6
+                        </small>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Source</label>
                         <select name="source" class="form-select">
-                            <option value="">-- Select --</option>
-                            @foreach (var s in new[] { "Advert", "Agency", "Direct",
-                            "Headhunting", "ALBA Website", "Exhibitions" })
+                            <option value="">-- How did you hear about this role? --</option>
+                            @foreach (var s in new[] { "Advert", "Agency",
+                        "Direct", "Headhunting",
+                        "ALBA Website", "Exhibitions" })
                             {
                                 <option value="@s"
-                                        selected="@(Model.Source == s ? "selected" : null)">
+                                        selected="@(Model.Source == s
+                                                                                                ? "selected" : null)">
                                     @s
                                 </option>
                             }
                         </select>
                     </div>
-                </div>
-            </div>
-
-            <div class="card mb-3">
-                <div class="card-header"><h5>Review Information</h5></div>
-                <div class="card-body">
                     <div class="mb-3">
-                        <label class="form-label">
-                            Prepared by (Recruitment Officer)
-                        </label>
-                        <input type="text" name="preparedBy" class="form-control"
-                               value="@Model.PreparedBy" />
+                        <label class="form-label">Email</label>
+                        <input type="text" class="form-control"
+                               value="@Model.Email" disabled
+                               style="background:#f8f9fa" />
+                        <small class="text-muted">Cannot be changed</small>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Reviewed by (Head of Recruitment)
-                        </label>
-                        <input type="text" name="reviewedBy" class="form-control"
-                               value="@Model.ReviewedByName" />
-                    </div>
-                </div>
+                    <button type="submit" class="btn btn-dark px-4">
+                        Save Profile
+                    </button>
+                </form>
             </div>
-
         </div>
-    </div>
 
-    <button type="submit" class="btn btn-dark px-4 mb-5">
-        Save Profile
-    </button>
-</form>
+    </div>
+    <div class="col-md-6">
+
+        <!-- HR/ADMIN ONLY — Employment Details (read only for employee) -->
+        <div class="card mb-4">
+            <div class="card-header"
+                 style="background:linear-gradient(135deg,#374151,#64748b) !important">
+                <h5>
+                    Employment Details
+                    <span style="font-size:11px;font-weight:400;opacity:0.8">
+                        (Assigned by HR/Admin)
+                    </span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Department</label>
+                    <input type="text" class="form-control"
+                           value="@(string.IsNullOrEmpty(Model.Department)
+                                                                      ? "Not yet assigned" : Model.Department)"
+                           disabled style="background:#f8f9fa" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Position Title</label>
+                    <input type="text" class="form-control"
+                           value="@(string.IsNullOrEmpty(Model.JobTitle)
+                                                                      ? "Not yet assigned" : Model.JobTitle)"
+                           disabled style="background:#f8f9fa" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Grade</label>
+                    <input type="text" class="form-control"
+                           value="@(string.IsNullOrEmpty(Model.Grade)
+                                                                      ? "Not yet assigned" : Model.Grade)"
+                           disabled style="background:#f8f9fa" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Badge Number</label>
+                    <input type="text" class="form-control"
+                           value="@(string.IsNullOrEmpty(Model.BadgeNumber)
+                                                                      ? "Not yet assigned" : Model.BadgeNumber)"
+                           disabled style="background:#f8f9fa" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">PRF Number</label>
+                    <input type="text" class="form-control"
+                           value="@(string.IsNullOrEmpty(Model.PrfNumber)
+                                                                      ? "Not yet assigned" : Model.PrfNumber)"
+                           disabled style="background:#f8f9fa" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Joining Date</label>
+                    <input type="text" class="form-control"
+                           value="@(Model.StartDate == default
+                                                                      ? "Not yet assigned"
+                                                                      : Model.StartDate.ToString("dd MMM yyyy"))"
+                           disabled style="background:#f8f9fa" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Reference No.</label>
+                    <input type="text" class="form-control"
+                           value="@(string.IsNullOrEmpty(Model.ReferenceNumber)
+                                                                      ? "Not yet assigned" : Model.ReferenceNumber)"
+                           disabled style="background:#f8f9fa" />
+                </div>
+                <small class="text-muted">
+                    <i>Contact your HR officer to update employment details</i>
+                </small>
+            </div>
+        </div>
+
+        <!-- HR/ADMIN ONLY — Review Information -->
+        <div class="card mb-4">
+            <div class="card-header"
+                 style="background:linear-gradient(135deg,#374151,#64748b) !important">
+                <h5>
+                    Review Information
+                    <span style="font-size:11px;font-weight:400;opacity:0.8">
+                        (Assigned by HR/Admin)
+                    </span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Prepared by</label>
+                    <input type="text" class="form-control"
+                           value="@(string.IsNullOrEmpty(Model.PreparedBy)
+                                                                      ? "Not yet assigned" : Model.PreparedBy)"
+                           disabled style="background:#f8f9fa" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Reviewed by</label>
+                    <input type="text" class="form-control"
+                           value="@(string.IsNullOrEmpty(Model.ReviewedByName)
+                                                                      ? "Not yet assigned" : Model.ReviewedByName)"
+                           disabled style="background:#f8f9fa" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

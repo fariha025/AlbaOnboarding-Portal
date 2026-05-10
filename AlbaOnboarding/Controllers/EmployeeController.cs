@@ -59,48 +59,55 @@ namespace AlbaOnboarding.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Profile(
-     string fullName, string department, string jobTitle,
-     string phoneNumber, string cprNumber, string badgeNumber,
-     string prfNumber, string grade, string referenceNumber,
-     string source, string preparedBy, string reviewedBy,
-     string startDate)
+    string fullName, string phoneNumber,
+    string cprNumber, string source)
         {
+            var errors = new List<string>();
+
             if (string.IsNullOrWhiteSpace(fullName))
+                errors.Add("Full name is required.");
+            else if (fullName.Length < 3)
+                errors.Add("Full name must be at least 3 characters.");
+            else if (!System.Text.RegularExpressions.Regex
+                .IsMatch(fullName, @"^[a-zA-Z\s]+$"))
+                errors.Add("Full name must contain letters only.");
+
+            if (!string.IsNullOrEmpty(cprNumber))
             {
-                TempData["Error"] = "Full name is required.";
+                var cleanCpr = cprNumber.Replace("-", "").Trim();
+                if (!System.Text.RegularExpressions.Regex
+                    .IsMatch(cleanCpr, @"^\d{9}$"))
+                    errors.Add("CPR must be exactly 9 digits.");
+            }
+
+            if (!string.IsNullOrEmpty(phoneNumber))
+            {
+                var cleanPhone = phoneNumber.Replace(" ", "").Replace("-", "");
+                if (!System.Text.RegularExpressions.Regex
+                    .IsMatch(cleanPhone, @"^(\+973)?[3|6]\d{7}$"))
+                    errors.Add("Phone must be a valid Bahrain number " +
+                        "(e.g. 36000000 or +97336000000).");
+            }
+
+            if (errors.Any())
+            {
+                TempData["Error"] = string.Join(" | ", errors);
                 var u = await _userManager.GetUserAsync(User);
                 return View(u);
             }
 
             var user = await _userManager.GetUserAsync(User);
             user.FullName = fullName;
-            user.Department = department ?? "";
-            user.JobTitle = jobTitle ?? "";
             user.PhoneNumber = phoneNumber ?? "";
             user.CprNumber = cprNumber ?? "";
-            user.BadgeNumber = badgeNumber ?? "";
-            user.PrfNumber = prfNumber ?? "";
-            user.Grade = grade ?? "";
-            user.ReferenceNumber = referenceNumber ?? "";
             user.Source = source ?? "";
-            user.PreparedBy = preparedBy ?? "";
-            user.ReviewedByName = reviewedBy ?? "";
 
-            if (!string.IsNullOrEmpty(startDate) &&
-                DateTime.TryParse(startDate, out DateTime parsedDate))
-                user.StartDate = parsedDate;
-
-            // Calculate profile completion
-            int filled = 0;
-            int total = 8;
+            // Recalculate completion — only employee-fillable fields count
+            int filled = 0; int total = 4;
             if (!string.IsNullOrEmpty(user.FullName)) filled++;
-            if (!string.IsNullOrEmpty(user.Department)) filled++;
-            if (!string.IsNullOrEmpty(user.JobTitle)) filled++;
             if (!string.IsNullOrEmpty(user.PhoneNumber)) filled++;
             if (!string.IsNullOrEmpty(user.CprNumber)) filled++;
-            if (!string.IsNullOrEmpty(user.BadgeNumber)) filled++;
-            if (!string.IsNullOrEmpty(user.Grade)) filled++;
-            if (user.StartDate != default) filled++;
+            if (!string.IsNullOrEmpty(user.Source)) filled++;
             user.ProfileCompletionPercent = (filled * 100) / total;
 
             if (user.OnboardingStatus == OnboardingStatus.NotStarted)
