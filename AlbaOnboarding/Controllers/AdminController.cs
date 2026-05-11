@@ -229,10 +229,13 @@ namespace AlbaOnboarding.Controllers
             var link = $"{Request.Scheme}://{Request.Host}/Identity/Account/Register?token={token.Token}&email={Uri.EscapeDataString(email)}";
 
             await _emailService.SendEmailAsync(email,
-                "You're invited to join ALBA Onboarding",
-                $"<p>Hello,</p><p>You have been invited to the ALBA onboarding portal " +
-                $"as <b>{role}</b>.</p><p><a href='{link}'>Click here to register</a></p>" +
-                $"<p>This link expires in 7 days.</p>");
+        "You're invited to join ALBA Onboarding",
+        $"<p>Hello,</p>" +
+        $"<p>You have been invited to join the ALBA onboarding portal " +
+        $"as <b>{role}</b>.</p>" +
+        $"<p><a href='{link}'>Click here to register</a></p>" +
+        $"<p>This link expires in 7 days.</p>" +
+        $"<p>ALBA HR & Training Department</p>");
 
             TempData["Success"] = $"Invitation sent to {email}";
             TempData["InviteLink"] = link;

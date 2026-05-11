@@ -64,29 +64,45 @@ namespace AlbaOnboarding.Controllers
         {
             var errors = new List<string>();
 
+            // Full name
             if (string.IsNullOrWhiteSpace(fullName))
                 errors.Add("Full name is required.");
             else if (fullName.Length < 3)
                 errors.Add("Full name must be at least 3 characters.");
             else if (!System.Text.RegularExpressions.Regex
                 .IsMatch(fullName, @"^[a-zA-Z\s]+$"))
-                errors.Add("Full name must contain letters only.");
+                errors.Add("Full name must contain letters only — no numbers or symbols.");
 
+            // CPR — Bahrain standard 9 digits with checksum
             if (!string.IsNullOrEmpty(cprNumber))
             {
                 var cleanCpr = cprNumber.Replace("-", "").Trim();
                 if (!System.Text.RegularExpressions.Regex
                     .IsMatch(cleanCpr, @"^\d{9}$"))
-                    errors.Add("CPR must be exactly 9 digits.");
+                    errors.Add("CPR must be exactly 9 digits (e.g. 870101234).");
+                else
+                {
+                    // Checksum validation
+                    int sum = 0;
+                    for (int i = 0; i < 8; i++)
+                        sum += int.Parse(cleanCpr[i].ToString()) * (i + 1);
+                    int checkDigit = int.Parse(cleanCpr[8].ToString());
+                    if (sum % 10 != checkDigit)
+                        errors.Add("CPR number is invalid — " +
+                            "please check and re-enter your Bahrain CPR.");
+                }
             }
 
+            // Phone — Bahrain TRA standard
             if (!string.IsNullOrEmpty(phoneNumber))
             {
-                var cleanPhone = phoneNumber.Replace(" ", "").Replace("-", "");
+                var cleanPhone = phoneNumber.Replace(" ", "")
+                    .Replace("-", "").Trim();
                 if (!System.Text.RegularExpressions.Regex
-                    .IsMatch(cleanPhone, @"^(\+973)?[3|6]\d{7}$"))
-                    errors.Add("Phone must be a valid Bahrain number " +
-                        "(e.g. 36000000 or +97336000000).");
+                    .IsMatch(cleanPhone,
+                        @"^(?:\+973|00973)?(?:1|3|6|7|8|9)\d{7}$"))
+                    errors.Add("Phone must be a valid 8-digit Bahrain number " +
+                        "(e.g. 36001234 or +97336001234).");
             }
 
             if (errors.Any())

@@ -21,7 +21,18 @@
     <span class="badge bg-danger fs-6">@rejectedCount Rejected</span>
 </div>
 <p class="text-muted">@employee.Email — @employee.Department</p>
-
+<div class="d-flex gap-2 mb-3">
+    <a asp-action="ReviewEmployee"
+           asp-route-employeeId="@employee.Id"
+           class="btn btn-outline-secondary btn-sm">
+        ← Back to Dashboard
+    </a>
+    <a asp-action="EditEmployeeDetails"
+           asp-route-employeeId="@employee.Id"
+           class="btn btn-dark btn-sm">
+        ✏ Edit Employment Details
+    </a>
+</div>
 @if (TempData["Success"] != null)
 {
     <div class="alert alert-success">@TempData["Success"]</div>
@@ -114,72 +125,7 @@
                 }
             </tbody>
         </table>
-        <div class="card mt-4">
-            <div class="card-header"><h5>Update Employment Details</h5></div>
-            <div class="card-body">
-                <form asp-action="UpdateEmployeeDetails" method="post">
-                    <input type="hidden" name="employeeId" value="@employee.Id" />
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Position Title</label>
-                                <input type="text" name="jobTitle"
-                                       class="form-control"
-                                       value="@employee.JobTitle" />
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Grade</label>
-                                <input type="text" name="grade"
-                                       class="form-control"
-                                       value="@employee.Grade" />
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Badge Number</label>
-                                <input type="text" name="badgeNumber"
-                                       class="form-control"
-                                       value="@employee.BadgeNumber" />
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">PRF Number</label>
-                                <input type="text" name="prfNumber"
-                                       class="form-control"
-                                       value="@employee.PrfNumber" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Reference No.</label>
-                                <input type="text" name="referenceNumber"
-                                       class="form-control"
-                                       value="@employee.ReferenceNumber" />
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Joining Date</label>
-                                <input type="date" name="startDate"
-                                       class="form-control"
-                                       value="@employee.StartDate
-                                .ToString(" yyyy-MM-dd")" />
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Prepared By</label>
-                                <input type="text" name="preparedBy"
-                                       class="form-control"
-                                       value="@employee.PreparedBy" />
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Reviewed By</label>
-                                <input type="text" name="reviewedBy"
-                                       class="form-control"
-                                       value="@employee.ReviewedByName" />
-                            </div>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-dark">
-                        Update Employee Details
-                    </button>
-                </form>
-            </div>
-        </div>
+        
     </div>
 
 </div>

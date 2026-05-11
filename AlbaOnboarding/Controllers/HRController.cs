@@ -78,7 +78,85 @@ namespace AlbaOnboarding.Controllers
             ViewBag.Submissions = submissions;
             return View();
         }
+        [HttpGet]
+        public async Task<IActionResult> EditEmployeeDetails(string employeeId)
+        {
+            var currentHR = await _userManager.GetUserAsync(User);
+            var employee = await _userManager.FindByIdAsync(employeeId);
 
+            if (employee == null || employee.AssignedHRId != currentHR.Id)
+                return Forbid();
+
+            return View(employee);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditEmployeeDetails(
+            string employeeId, string jobTitle, string grade,
+            string badgeNumber, string prfNumber, string referenceNumber,
+            string preparedBy, string reviewedBy, string startDate)
+        {
+            var currentHR = await _userManager.GetUserAsync(User);
+            var employee = await _userManager.FindByIdAsync(employeeId);
+
+            if (employee == null || employee.AssignedHRId != currentHR.Id)
+                return Forbid();
+
+            var errors = new List<string>();
+
+            // Badge number validation — 4 to 6 digits
+            if (!string.IsNullOrEmpty(badgeNumber) &&
+                !System.Text.RegularExpressions.Regex
+                    .IsMatch(badgeNumber, @"^\d{4,6}$"))
+                errors.Add("Badge number must be 4 to 6 digits only.");
+
+            // PRF number validation — format PRF-YYYY-NNN
+            if (!string.IsNullOrEmpty(prfNumber) &&
+                !System.Text.RegularExpressions.Regex
+                    .IsMatch(prfNumber, @"^PRF-\d{4}-\d{2,4}$"))
+                errors.Add("PRF number must follow format: PRF-2026-042");
+
+            // Reference number validation — format REF-YYYY-XXXXX
+            if (!string.IsNullOrEmpty(referenceNumber) &&
+                !System.Text.RegularExpressions.Regex
+                    .IsMatch(referenceNumber, @"^REF-\d{4}-[A-Z0-9]{3,5}$"))
+                errors.Add("Reference number must follow format: REF-2026-A2B3");
+
+            if (errors.Any())
+            {
+                TempData["Error"] = string.Join(" | ", errors);
+                return View(employee);
+            }
+
+            if (!string.IsNullOrEmpty(jobTitle))
+                employee.JobTitle = jobTitle;
+            if (!string.IsNullOrEmpty(grade))
+                employee.Grade = grade;
+            if (!string.IsNullOrEmpty(badgeNumber))
+                employee.BadgeNumber = badgeNumber;
+            if (!string.IsNullOrEmpty(prfNumber))
+                employee.PrfNumber = prfNumber;
+            if (!string.IsNullOrEmpty(referenceNumber))
+                employee.ReferenceNumber = referenceNumber;
+            if (!string.IsNullOrEmpty(preparedBy))
+                employee.PreparedBy = preparedBy;
+            if (!string.IsNullOrEmpty(reviewedBy))
+                employee.ReviewedByName = reviewedBy;
+            if (!string.IsNullOrEmpty(startDate) &&
+                DateTime.TryParse(startDate, out DateTime pd))
+                employee.StartDate = pd;
+
+            var result = await _userManager.UpdateAsync(employee);
+
+            if (result.Succeeded)
+                TempData["Success"] = "Employee details updated successfully.";
+            else
+                TempData["Error"] = "Update failed. Please try again.";
+
+            return RedirectToAction("EditEmployeeDetails",
+                new { employeeId = employeeId });
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ApproveDocument(int submissionId, string comment)

@@ -1,0 +1,162 @@
+﻿@model AlbaOnboarding.Models.ApplicationUser
+@{
+    ViewData["Title"] = "Edit Employee Details";
+}
+
+<a asp-action="ReviewEmployee"
+       asp-route-employeeId="@Model.Id"
+       class="btn btn-sm btn-outline-secondary mb-3">
+    ← Back to Review
+</a>
+
+<h2>Edit Employment Details</h2>
+<p class="text-muted">
+    Updating details for: <strong>@Model.FullName</strong>
+    (@Model.Email)
+</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @foreach (var err in TempData["Error"].ToString().Split('|'))
+        {
+            <div>⚠ @err.Trim()</div>
+        }
+    </div>
+}
+
+<div class="card mt-3">
+    <div class="card-header"><h5>Employment Information</h5></div>
+    <div class="card-body">
+        <form asp-action="EditEmployeeDetails" method="post">
+            <input type="hidden" name="employeeId" value="@Model.Id" />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Position Title</label>
+                        <input type="text" name="jobTitle"
+                               class="form-control"
+                               value="@Model.JobTitle"
+                               placeholder="e.g. Process Engineer" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Grade</label>
+                        <input type="text" name="grade"
+                               class="form-control"
+                               value="@Model.Grade"
+                               placeholder="e.g. G5" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Badge Number</label>
+                        <input type="text" name="badgeNumber"
+                               class="form-control"
+                               value="@Model.BadgeNumber"
+                               maxlength="6"
+                               placeholder="4-6 digits e.g. 10542" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Joining Date</label>
+                        <input type="date" name="startDate"
+                               class="form-control"
+                               value="@Model.StartDate
+                        .ToString(" yyyy-MM-dd")" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">PRF Number</label>
+                        <input type="text" name="prfNumber"
+                               class="form-control"
+                               value="@Model.PrfNumber"
+                               placeholder="PRF-2026-042" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Reference Number</label>
+                        <input type="text" name="referenceNumber"
+                               class="form-control"
+                               value="@Model.ReferenceNumber"
+                               placeholder="REF-2026-A2B3" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Prepared By</label>
+                        <input type="text" name="preparedBy"
+                               class="form-control"
+                               value="@Model.PreparedBy"
+                               placeholder="Recruitment Officer name" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Reviewed By</label>
+                        <input type="text" name="reviewedBy"
+                               class="form-control"
+                               value="@Model.ReviewedByName"
+                               placeholder="Head of Recruitment name" />
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-dark px-4">
+                Save Changes
+            </button>
+            <a asp-action="ReviewEmployee"
+                   asp-route-employeeId="@Model.Id"
+                   class="btn btn-outline-secondary ms-2">
+                Cancel
+            </a>
+        </form>
+    </div>
+</div>
+
+<!-- Current values display -->
+<div class="card mt-4">
+    <div class="card-header"
+         style="background:linear-gradient(135deg,#374151,#64748b) !important">
+        <h5>Current Values</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p>
+                    <strong>Department:</strong>
+                    @(string.IsNullOrEmpty(Model.Department)
+                        ? "Not assigned" : Model.Department)
+                </p>
+                <p>
+                    <strong>Position:</strong>
+                    @(string.IsNullOrEmpty(Model.JobTitle)
+                        ? "Not assigned" : Model.JobTitle)
+                </p>
+                <p>
+                    <strong>Grade:</strong>
+                    @(string.IsNullOrEmpty(Model.Grade)
+                        ? "Not assigned" : Model.Grade)
+                </p>
+                <p>
+                    <strong>Badge:</strong>
+                    @(string.IsNullOrEmpty(Model.BadgeNumber)
+                        ? "Not assigned" : Model.BadgeNumber)
+                </p>
+            </div>
+            <div class="col-md-6">
+                <p>
+                    <strong>PRF Number:</strong>
+                    @(string.IsNullOrEmpty(Model.PrfNumber)
+                        ? "Not assigned" : Model.PrfNumber)
+                </p>
+                <p>
+                    <strong>Reference:</strong>
+                    @(string.IsNullOrEmpty(Model.ReferenceNumber)
+                        ? "Not assigned" : Model.ReferenceNumber)
+                </p>
+                <p>
+                    <strong>Joining Date:</strong>
+                    @(Model.StartDate == default
+                        ? "Not assigned"
+                        : Model.StartDate.ToString("dd MMM yyyy"))
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

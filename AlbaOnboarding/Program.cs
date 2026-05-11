@@ -1,4 +1,3 @@
-
 using AlbaOnboarding.Data;
 using AlbaOnboarding.Models;
 using AlbaOnboarding.Services;
@@ -31,15 +30,34 @@ builder.Services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
 // Email Service
 builder.Services.AddScoped<AlbaOnboarding.Services.EmailService>();
 
+// this part is changed
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+    options.LogoutPath = "/Identity/Account/Logout";
+    options.AccessDeniedPath = "/Home/Error";
+    options.SlidingExpiration = true;
+    options.ExpireTimeSpan = TimeSpan.FromHours(24);
+});
+
 var app = builder.Build();
 
-// HTTP pipeline
-app.UseDeveloperExceptionPage();
+// this part is changed
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseMigrationsEndPoint();
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
 
+app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
 app.UseAuthorization();
 
 app.MapControllerRoute(

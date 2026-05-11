@@ -15,6 +15,8 @@ namespace AlbaOnboarding.Controllers
 
         public IActionResult Index()
         {
+            if (!User.Identity.IsAuthenticated)
+                return View();
             if (User.IsInRole("Admin"))
                 return RedirectToAction("Index", "Admin");
             if (User.IsInRole("HR"))
