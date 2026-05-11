@@ -3,160 +3,127 @@
     Layout = "/Views/Shared/_Layout.cshtml";
 }
 
-<!-- Hero section -->
-<div style="background:#101042;
-    color:white;padding:70px 20px 60px;
-    margin:-24px -12px 0;text-align:center">
-    <div style="max-width:680px;margin:0 auto">
-        <div style="margin-bottom:16px">
-            <img src="~/images/alba-logo.png"
-                 alt="ALBA Logo"
-                 style="height:70px;object-fit:contain;
-            filter:brightness(0) invert(1)"
-                 onerror="this.style.display='none'" />
+<div style="background: linear-gradient(135deg, #16246d 0%, #1e2d8a 50%, #5056d8 100%);
+    color:white; padding:80px 20px 60px;
+    margin:-24px -12px 0; overflow:hidden; position:relative;">
+
+    <div style="position:absolute;top:-100px;right:-100px;width:400px;height:400px;
+    border-radius:50%;background:rgba(255,255,255,0.04)"></div>
+    <div style="position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;
+    border-radius:50%;background:rgba(255,255,255,0.04)"></div>
+
+    <div style="max-width:1100px;margin:0 auto;display:flex;
+        align-items:center;justify-content:space-between;
+        flex-wrap:wrap;gap:40px;position:relative;z-index:2">
+
+        <div style="flex:1;min-width:300px;text-align:left">
+            <div style="margin-bottom:20px">
+                <img src="~/images/alba-logo.png" alt="ALBA Logo"
+                     style="height:55px;filter:brightness(0) invert(1)"
+                     onerror="this.style.display='none'" />
+            </div>
+            <div style="display:inline-block;background:rgba(255,255,255,0.12);
+                border:1px solid rgba(255,255,255,0.2);
+                border-radius:20px;padding:5px 14px;
+                font-size:0.8rem;font-weight:500;
+                margin-bottom:18px;letter-spacing:0.5px">
+                HR & Training Department — ALBA
+            </div>
+            <h1 style="font-size:2.8rem;font-weight:800;line-height:1.15;
+                margin-bottom:16px;letter-spacing:-0.5px">
+                Employee Onboarding,<br />
+                <span style="color:#abb8ff">Done Digitally.</span>
+            </h1>
+            <p style="font-size:1rem;opacity:0.85;line-height:1.8;
+                margin-bottom:32px;max-width:460px">
+                Replace paper checklists and manual coordination with a
+                centralized portal. Invite employees, track progress,
+                verify documents — all in one place.
+            </p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+                <a asp-area="Identity" asp-page="/Account/Login"
+                       style="background:white;color:#16246d;padding:13px 30px;
+                    border-radius:50px;text-decoration:none;
+                    font-weight:700;font-size:0.95rem;
+                    box-shadow:0 8px 24px rgba(0,0,0,0.2);
+                    transition:all 0.2s">
+                    Sign In to Portal →
+                </a>
+                <a href="#features"
+                       style="background:rgba(255,255,255,0.12);color:white;
+                    padding:13px 30px;border-radius:50px;
+                    text-decoration:none;font-weight:600;
+                    font-size:0.95rem;
+                    border:1px solid rgba(255,255,255,0.25);
+                    transition:all 0.2s">
+                    Learn More
+                </a>
+            </div>
         </div>
-        <h1 style="font-size:2.4rem;font-weight:600;
-            margin-bottom:12px;letter-spacing:0.5px">
-            ALBA Onboarding Portal
-        </h1>
-        <p style="font-size:1.05rem;opacity:0.9;
-            line-height:1.7;margin-bottom:8px">
-            Aluminium Bahrain B.S.C. (ALBA)
-        </p>
-        <p style="font-size:0.95rem;opacity:0.75;
-            max-width:500px;margin:0 auto 28px">
-            A unified digital platform replacing manual onboarding with
-            guided workflows, secure document handling, and real-time tracking.
-        </p>
-        <a asp-area="Identity" asp-page="/Account/Login"
-               style="background:white;color:#101042;
-            padding:13px 36px;border-radius:8px;
-            text-decoration:none;font-weight:600;
-            font-size:1rem;display:inline-block;
-            box-shadow:0 4px 12px rgba(0,0,0,0.2);
-            transition:all .2s">
-            Sign In to Portal →
-        </a>
+
+        <div style="flex:1;min-width:300px;display:flex;
+            justify-content:center;align-items:center;
+            position:relative">
+            <div style="position:absolute;width:380px;height:380px;
+            border-radius:50%;
+            background:radial-gradient(circle,
+            rgba(80,86,216,0.5) 0%,
+            rgba(22,36,109,0.1) 70%,
+            transparent 100%);
+            z-index:0"></div>
+            <img src="~/images/image-1.png"
+                 alt="Onboarding Illustration"
+                 style="width:100%;
+            height:100%;
+            max-width:850px;
+            object-fit:cover;
+transform: scale (1.4);
+            filter:drop-shadow(0 20px 30px rgba(0,0,0,0.2));
+            opacity:1;
+            position:relative;z-index:1" />
+        </div>
     </div>
 </div>
+        <div style="max-width:1100px; margin:60px auto; padding: 0 20px;">
+            <h3 style="text-align:center; color:#101042; margin-bottom:50px; font-size: 2.2rem; font-weight:700">
+                Platform Features
+            </h3>
+    
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:40px">
+        
+                @{
+                    var features = new[] {
+                ("101042", "📋", "Digital Checklists", "Guided digital workflows organized by category — from Pre-Employment to IT Setup."),
+                ("bd443c", "📁", "Secure Upload", "Verify and approve documents digitally with comments — no physical paperwork."),
+                ("101042", "📊", "Real-Time Tracking", "Monitor onboarding progress live with dashboards and department-level analytics."),
+                ("bd443c", "👥", "Role-Based Access", "Three distinct portals for Admin, HR Officers, and Employees."),
+                ("101042", "✉️", "Email Invitations", "Invite new employees via secure email links with automatic role assignment."),
+                ("bd443c", "✅", "Compliance Ready", "Full audit trail maintained for all mandatory ALBA documents.")
+            };
+                }
 
-<!-- Stats bar -->
-<div style="background:#101042;color:white;
-    padding:16px 20px;margin:0 -12px">
-    <div style="max-width:800px;margin:0 auto;
-        display:flex;justify-content:space-around;
-        flex-wrap:wrap;gap:12px;text-align:center">
-        <div>
-            <div style="font-size:1.6rem;font-weight:600">3</div>
-            <div style="font-size:0.8rem;opacity:0.8">User Roles</div>
-        </div>
-        <div>
-            <div style="font-size:1.6rem;font-weight:600">51</div>
-            <div style="font-size:0.8rem;opacity:0.8">Checklist Items</div>
-        </div>
-        <div>
-            <div style="font-size:1.6rem;font-weight:600">7</div>
-            <div style="font-size:0.8rem;opacity:0.8">Document Categories</div>
-        </div>
-        <div>
-            <div style="font-size:1.6rem;font-weight:600">100%</div>
-            <div style="font-size:0.8rem;opacity:0.8">Digital Process</div>
-        </div>
-    </div>
-</div>
+                @foreach (var feature in features)
+                {
+                    <div style="position: relative; padding-top: 25px;">
+                        <div style="border: 2px solid #@feature.Item1; border-radius: 0 40px 40px 40px; padding: 40px 25px 25px; min-height: 150px; position: relative; background: white; box-shadow: 10px 10px 20px rgba(0,0,0,0.02);">
+                    
+                            <div style="position: absolute; top: -30px; left: -10px; width: 65px; height: 65px; background: white; border: 4px solid #@feature.Item1; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 2;">
+                                @feature.Item2
+                            </div>
 
-<!-- Features grid -->
-<div style="max-width:900px;margin:40px auto 0">
-    <h3 style="text-align:center;color:#101042;
-        margin-bottom:28px;font-weight:500">
-        Platform Features
-    </h3>
-    <div style="display:grid;
-        grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-        gap:20px">
-
-        <div style="background:white;border-radius:12px;
-            padding:24px;border-top:4px solid #101042;
-            box-shadow:0 2px 8px rgba(0,0,117,0.08)">
-            <div style="font-size:1.8rem;margin-bottom:10px">📋</div>
-            <h5 style="color:#101042;margin-bottom:8px;font-weight:600">
-                Digital Checklists
-            </h5>
-            <p style="color:#666;font-size:0.9rem;line-height:1.6;margin:0">
-                Replaces paper-based onboarding with guided digital workflows
-                organized by category — from Pre-Employment to IT Setup.
-            </p>
+                            <h5 style="color:#@feature.Item1; margin-bottom:12px; font-weight:700; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                                @feature.Item3
+                            </h5>
+                            <p style="color:#555; font-size:0.95rem; line-height:1.6; margin:0;">
+                                @feature.Item4
+                            </p>
+                        </div>
+                
+                        <div style="position: absolute; bottom: -5px; right: 20px; width: 60px; height: 5px; background: #@feature.Item1; opacity: 0.3; border-radius: 10px;"></div>
+                    </div>
+                }
+            </div>
         </div>
-
-        <div style="background:white;border-radius:12px;
-            padding:24px;border-top:4px solid #bd443c;
-            box-shadow:0 2px 8px rgba(0,0,117,0.08)">
-            <div style="font-size:1.8rem;margin-bottom:10px">📁</div>
-            <h5 style="color:#bd443c;margin-bottom:8px;font-weight:600">
-                Secure Document Upload
-            </h5>
-            <p style="color:#666;font-size:0.9rem;line-height:1.6;margin:0">
-                Employees upload required documents securely. HR verifies
-                and approves digitally with comments — no physical paperwork.
-            </p>
-        </div>
-
-        <div style="background:white;border-radius:12px;
-            padding:24px;border-top:4px solid #101042;
-            box-shadow:0 2px 8px rgba(0,0,117,0.08)">
-            <div style="font-size:1.8rem;margin-bottom:10px">📊</div>
-            <h5 style="color:#101042;margin-bottom:8px;font-weight:600">
-                Real-Time Tracking
-            </h5>
-            <p style="color:#666;font-size:0.9rem;line-height:1.6;margin:0">
-                HR and Admin monitor onboarding progress live with
-                dashboards, progress bars, and department-level analytics.
-            </p>
-        </div>
-
-        <div style="background:white;border-radius:12px;
-            padding:24px;border-top:4px solid #bd443c;
-            box-shadow:0 2px 8px rgba(0,0,117,0.08)">
-            <div style="font-size:1.8rem;margin-bottom:10px">👥</div>
-            <h5 style="color:#bd443c;margin-bottom:8px;font-weight:600">
-                Role-Based Access
-            </h5>
-            <p style="color:#666;font-size:0.9rem;line-height:1.6;margin:0">
-                Three distinct portals for Admin, HR Officers, and Employees.
-                Each role sees only what is relevant to their responsibilities.
-            </p>
-        </div>
-
-        <div style="background:white;border-radius:12px;
-            padding:24px;border-top:4px solid #101042;
-            box-shadow:0 2px 8px rgba(0,0,117,0.08)">
-            <div style="font-size:1.8rem;margin-bottom:10px">✉️</div>
-            <h5 style="color:#101042;margin-bottom:8px;font-weight:600">
-                Email Invitations
-            </h5>
-            <p style="color:#666;font-size:0.9rem;line-height:1.6;margin:0">
-                Admin invites new employees via a secure email link.
-                Role is assigned automatically upon registration —
-                no manual account creation needed.
-            </p>
-        </div>
-
-        <div style="background:white;border-radius:12px;
-            padding:24px;border-top:4px solid #bd443c;
-            box-shadow:0 2px 8px rgba(0,0,117,0.08)">
-            <div style="font-size:1.8rem;margin-bottom:10px">✅</div>
-            <h5 style="color:#bd443c;margin-bottom:8px;font-weight:600">
-                Compliance Ready
-            </h5>
-            <p style="color:#666;font-size:0.9rem;line-height:1.6;margin:0">
-                Ensures all mandatory ALBA documents are collected and
-                approved before employee integration. Full audit trail
-                maintained for compliance.
-            </p>
-        </div>
-
-    </div>
-</div>
 
 <!-- How it works -->
 <div style="max-width:900px;margin:48px auto 0">
