@@ -14,8 +14,13 @@ namespace AlbaOnboarding.Data
         public DbSet<InvitationToken> InvitationTokens { get; set; }
         public DbSet<ChecklistItem> ChecklistItems { get; set; }
         public DbSet<ChecklistSubmission> ChecklistSubmissions { get; set; }
-    
-    protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder
+                .LogTo(message => System.Diagnostics.Debug.WriteLine(message), LogLevel.Information)
+                .EnableSensitiveDataLogging();
+        }
+        protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
