@@ -28,7 +28,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
 // Email Service
-builder.Services.AddScoped<AlbaOnboarding.Services.EmailService>();
+builder.Services.AddScoped<EmailService>();
 
 // this part is changed
 builder.Services.ConfigureApplicationCookie(options =>

@@ -87,7 +87,7 @@
                     <th>Status</th>
                     <th>Progress</th>
                     <th>Assigned HR</th>
-                    <th>Reassign HR</th>
+                    <th>Assign HR & Department</th>
                 </tr>
             </thead>
             <tbody>
@@ -130,20 +130,48 @@
                             }
                         </td>
                         <td>
-                            <form asp-action="AssignHR" method="post"
-                                  style="display:flex;gap:4px">
-                                <input type="hidden" name="employeeId"
-                                       value="@data.Employee.Id" />
-                                <select name="hrId" class="form-select form-select-sm">
-                                    <option value="">-- Select HR --</option>
-                                    @foreach (var hr in ViewBag.HRList)
-                                    {
-                                        <option value="@hr.Id">@hr.FullName</option>
-                                    }
-                                </select>
-                                <button type="submit"
-                                        class="btn btn-sm btn-dark">Assign</button>
-                            </form>
+                            <td>
+                                <form asp-action="AssignHR" method="post"
+                                      style="display:flex;flex-direction:column;gap:6px">
+                                    <input type="hidden" name="employeeId"
+                                           value="@data.Employee.Id" />
+
+                                    <!-- HR dropdown -->
+                                    <select name="hrId" class="form-select form-select-sm">
+                                        <option value="">-- Select HR --</option>
+                                        @foreach (var hr in ViewBag.HRList)
+                                        {
+                                            <option value="@hr.Id"
+                                                    selected="@(data.Employee.AssignedHRId == hr.Id
+                                                                                            ? "selected" : null)">
+                                                @hr.FullName
+                                            </option>
+                                        }
+                                    </select>
+
+                                    <!-- Department dropdown -->
+                                    <select name="department" class="form-select form-select-sm">
+                                        <option value="">-- Select Department --</option>
+                                        @foreach (var dept in new[] {
+                "Engineering", "Finance", "Operations",
+                "HR", "IT", "Safety", "Procurement",
+                "Legal", "Administration", "Production",
+                "Maintenance", "Quality"
+            })
+                                        {
+                                            <option value="@dept"
+                                                    selected="@(data.Employee.Department == dept
+                                                                                            ? "selected" : null)">
+                                                @dept
+                                            </option>
+                                        }
+                                    </select>
+
+                                    <button type="submit" class="btn btn-sm btn-dark">
+                                        Assign
+                                    </button>
+                                </form>
+                            </td>
                         </td>
                     </tr>
                 }

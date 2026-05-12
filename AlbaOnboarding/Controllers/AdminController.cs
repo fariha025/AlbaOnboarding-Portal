@@ -74,15 +74,33 @@ namespace AlbaOnboarding.Controllers
         // Assign HR to employee
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AssignHR(string employeeId, string hrId)
+        public async Task<IActionResult> AssignHR(
+    string employeeId, string hrId, string department)
         {
             var employee = await _userManager.FindByIdAsync(employeeId);
             if (employee == null) return NotFound();
 
-            employee.AssignedHRId = hrId;
+            if (!string.IsNullOrEmpty(hrId))
+                employee.AssignedHRId = hrId;
+
+            if (!string.IsNullOrEmpty(department))
+                employee.Department = department;
+
             await _userManager.UpdateAsync(employee);
 
-            TempData["Success"] = $"HR assigned to {employee.FullName} successfully.";
+            var hrName = string.Empty;
+            if (!string.IsNullOrEmpty(hrId))
+            {
+                var hr = await _userManager.FindByIdAsync(hrId);
+                hrName = hr?.FullName ?? "";
+            }
+
+            TempData["Success"] = !string.IsNullOrEmpty(hrName)
+                ? $"HR ({hrName}) and department ({department}) " +
+                  $"assigned to {employee.FullName}."
+                : $"Department ({department}) assigned to " +
+                  $"{employee.FullName}.";
+
             return RedirectToAction("Index");
         }
 
