@@ -76,10 +76,12 @@
 <div class="card mt-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">All Employees</h5>
-        <a asp-action="ExportCsv" class="btn btn-sm btn-outline-dark">Export CSV</a>
+        <a asp-action="ExportCsv" class="btn btn-sm btn-outline-light">
+            <i class="fa-solid fa-download me-1"></i>Export CSV
+        </a>
     </div>
-    <div class="card-body">
-        <table class="table table-hover">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -87,91 +89,137 @@
                     <th>Status</th>
                     <th>Progress</th>
                     <th>Assigned HR</th>
-                    <th>Assign HR & Department</th>
+                    <th>Assign HR</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var data in ViewBag.EmployeeData)
                 {
                     var pct = (int)data.Percentage;
-                    var barColor = pct < 30 ? "danger" : pct < 70 ? "warning" : "success";
+                    var barColor = pct < 30 ? "#c0392b" :
+                                   pct < 70 ? "#d97706" : "#1a6b2f";
                     <tr>
+                        <!-- Name -->
                         <td>
-                            @data.Employee.FullName
-                            <br /><small class="text-muted">@data.Employee.Email</small>
+                            <strong>@data.Employee.FullName</strong>
+                            <br />
+                            <small class="text-muted">
+                                @data.Employee.Email
+                            </small>
                         </td>
-                        <td>@data.Employee.Department</td>
+
+                        <!-- Department — inline editable dropdown -->
                         <td>
-                            <span class="badge bg-@(
-                                data.Employee.OnboardingStatus ==
-                                AlbaOnboarding.Models.OnboardingStatus.Completed ? "success" :
-                                data.Employee.OnboardingStatus ==
-                                AlbaOnboarding.Models.OnboardingStatus.InProgress ? "warning" :
-                                "secondary")">
+                            <form asp-action="AssignDepartment"
+                                  method="post"
+                                  style="display:flex;gap:4px;
+                                align-items:center">
+                                <input type="hidden" name="employeeId"
+                                       value="@data.Employee.Id" />
+                                <select name="department"
+                                        class="form-select form-select-sm"
+                                        style="min-width:130px;
+                                    border:1px dashed #5056d8;
+                                    background:#f9fafb"
+                                        onchange="this.form.submit()">
+                                    <option value="">
+                                        @(string.IsNullOrEmpty(
+                                            data.Employee.Department)
+                                            ? "-- Set Department --"
+                                            : data.Employee.Department)
+                                    </option>
+                                    @foreach (var dept in new[] {
+                                        "Engineering", "Finance",
+                                        "Operations", "HR", "IT",
+                                        "Safety", "Procurement",
+                                        "Legal", "Administration",
+                                        "Production", "Maintenance",
+                                        "Quality"
+                                    })
+                                    {
+                                        if (dept != data.Employee.Department)
+                                        {
+                                            <option value="@dept">
+                                                @dept
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                            </form>
+                        </td>
+
+                        <!-- Status -->
+                        <td>
+                            <span class="badge"
+                                  style="background:@(
+                                                                  data.Employee.OnboardingStatus ==
+                                                                  AlbaOnboarding.Models.OnboardingStatus
+                                                                      .Completed ? "#1a6b2f" :
+                                                                  data.Employee.OnboardingStatus ==
+                                                                  AlbaOnboarding.Models.OnboardingStatus
+                                                                      .InProgress ? "#d97706" :
+                                                                  "#64748b")">
                                 @data.Employee.OnboardingStatus
                             </span>
                         </td>
-                        <td style="width:150px">
-                            <div class="progress">
-                                <div class="progress-bar bg-@barColor"
-                                     style="width:@pct%">@pct%</div>
+
+                        <!-- Progress -->
+                        <td style="min-width:120px">
+                            <div class="progress" style="height:18px">
+                                <div class="progress-bar"
+                                     style="width:@pct%;
+                                    background:@barColor;
+                                    font-size:11px;
+                                    font-weight:600">
+                                    @pct%
+                                </div>
                             </div>
                         </td>
+
+                        <!-- Assigned HR display -->
                         <td>
                             @if (data.AssignedHRName == "Not Assigned")
                             {
-                                <span class="badge" style="background:#888">Not Assigned</span>
+                                <span class="badge"
+                                      style="background:#888">
+                                    Not Assigned
+                                </span>
                             }
                             else
                             {
-                                <span class="badge" style="background:#2e7d32">
+                                <span class="badge"
+                                      style="background:#1a6b2f">
                                     ✓ @data.AssignedHRName
                                 </span>
                             }
                         </td>
+
+                        <!-- Assign HR — unchanged from before -->
                         <td>
-                            <td>
-                                <form asp-action="AssignHR" method="post"
-                                      style="display:flex;flex-direction:column;gap:6px">
-                                    <input type="hidden" name="employeeId"
-                                           value="@data.Employee.Id" />
-
-                                    <!-- HR dropdown -->
-                                    <select name="hrId" class="form-select form-select-sm">
-                                        <option value="">-- Select HR --</option>
-                                        @foreach (var hr in ViewBag.HRList)
-                                        {
-                                            <option value="@hr.Id"
-                                                    selected="@(data.Employee.AssignedHRId == hr.Id
-                                                                                            ? "selected" : null)">
-                                                @hr.FullName
-                                            </option>
-                                        }
-                                    </select>
-
-                                    <!-- Department dropdown -->
-                                    <select name="department" class="form-select form-select-sm">
-                                        <option value="">-- Select Department --</option>
-                                        @foreach (var dept in new[] {
-                "Engineering", "Finance", "Operations",
-                "HR", "IT", "Safety", "Procurement",
-                "Legal", "Administration", "Production",
-                "Maintenance", "Quality"
-            })
-                                        {
-                                            <option value="@dept"
-                                                    selected="@(data.Employee.Department == dept
-                                                                                            ? "selected" : null)">
-                                                @dept
-                                            </option>
-                                        }
-                                    </select>
-
-                                    <button type="submit" class="btn btn-sm btn-dark">
-                                        Assign
-                                    </button>
-                                </form>
-                            </td>
+                            <form asp-action="AssignHR" method="post"
+                                  style="display:flex;gap:4px">
+                                <input type="hidden" name="employeeId"
+                                       value="@data.Employee.Id" />
+                                <select name="hrId"
+                                        class="form-select form-select-sm"
+                                        style="min-width:120px">
+                                    <option value="">-- Select HR --</option>
+                                    @foreach (var hr in ViewBag.HRList)
+                                    {
+                                        <option value="@hr.Id"
+                                                selected="@(
+                                                                                        data.Employee.AssignedHRId
+                                                                                        == hr.Id
+                                                                                        ? "selected" : null)">
+                                            @hr.FullName
+                                        </option>
+                                    }
+                                </select>
+                                <button type="submit"
+                                        class="btn btn-sm btn-dark">
+                                    Assign
+                                </button>
+                            </form>
                         </td>
                     </tr>
                 }
